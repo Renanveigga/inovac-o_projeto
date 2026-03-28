@@ -1,11 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Courses.module.css";
 import ProfessorCard from "../../components/ProfessorCard/ProfessorCard";
-import { CURSOS } from "../../data/mockData";
+import { getCursos } from "../../services/cursosService";
 
 export default function Courses() {
-  const [activeId, setActiveId] = useState(CURSOS[0].id);
-  const curso = CURSOS.find((c) => c.id === activeId);
+  const [cursos, setCursos] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState(null);
+
+  useEffect(() => {
+    getCursos()
+      .then((res) => {
+        setCursos(res.data);
+        setActiveId(res.data[0]?.id ?? null);
+      })
+      .catch(() => setErro("Erro ao carregar cursos."))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const curso = cursos.find((c) => c.id === activeId);
 
   return (
     <div>
@@ -14,17 +28,15 @@ export default function Courses() {
         Conheça os cursos técnicos oferecidos pela instituição.
       </p>
 
-      {/* Tabs */}
+      {loading && <p className="page-subtitle">Carregando...</p>}
+      {erro    && <p style={{ color: "red" }}>{erro}</p>}
+
       <div className={styles.tabs}>
-        {CURSOS.map((c) => (
+        {cursos.map((c) => (
           <button
             key={c.id}
             className={`${styles.tabBtn} ${activeId === c.id ? styles.active : ""}`}
-            style={
-              activeId === c.id
-                ? { background: c.cor, borderColor: c.cor }
-                : {}
-            }
+            style={activeId === c.id ? { background: c.cor, borderColor: c.cor } : {}}
             onClick={() => setActiveId(c.id)}
           >
             {c.sigla} — {c.nome.split(" ").slice(2).join(" ")}
@@ -32,16 +44,14 @@ export default function Courses() {
         ))}
       </div>
 
-      {/* Banner */}
       {curso && (
         <>
           <div className={styles.courseBanner} style={{ background: curso.cor }}>
             <p className={styles.courseBannerEyebrow}>Curso Técnico</p>
             <h3 className={styles.courseBannerTitle}>{curso.nome}</h3>
-            <p className={styles.courseBannerDesc}>{curso.desc}</p>
+            <p className={styles.courseBannerDesc}>{curso.descricao}</p>
           </div>
 
-          {/* Corpo docente */}
           <h4 className={styles.docenteTitle}>Corpo Docente</h4>
           <div className={styles.docenteGrid}>
             {curso.professores.map((prof, i) => (

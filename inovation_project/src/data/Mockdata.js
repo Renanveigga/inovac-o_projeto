@@ -4,6 +4,7 @@ export const NAV_ITEMS = [
   { id: "lost",    label: "Achados e Perdidos",  icon: "◎" },
   { id: "courses", label: "Cursos Técnicos",     icon: "✦" },
   { id: "history", label: "Nossa História",      icon: "◈" },
+  { id: "admin",   label: "Admin",               icon: "⚙" },
 ];
 
 export const AVISOS = [

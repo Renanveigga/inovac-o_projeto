@@ -1,7 +1,25 @@
+import { useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import { NAV_ITEMS } from "../../data/mockData";
 
-export default function Sidebar({ currentPage, onNavigate }) {
+const ROUTE_MAP = {
+  home:    "/",
+  library: "/biblioteca",
+  lost:    "/achados",
+  courses: "/cursos",
+  history: "/historia",
+  admin:   "/admin",
+};
+
+export default function Sidebar({ onNavigate }) {
+  const location = useLocation();
+
+  const isActive = (id) => {
+    const route = ROUTE_MAP[id];
+    if (id === "home") return location.pathname === "/";
+    return location.pathname.startsWith(route);
+  };
+
   return (
     <aside className={styles.sidebar}>
 
@@ -17,7 +35,7 @@ export default function Sidebar({ currentPage, onNavigate }) {
         {NAV_ITEMS.map((item) => (
           <button
             key={item.id}
-            className={`${styles.navBtn} ${currentPage === item.id ? styles.active : ""}`}
+            className={`${styles.navBtn} ${isActive(item.id) ? styles.active : ""}`}
             onClick={() => onNavigate(item.id)}
           >
             <span className={styles.navIcon}>{item.icon}</span>
