@@ -1,10 +1,19 @@
+import { 
+  House, 
+  Grid, 
+  QuestionCircle, 
+  JournalBookmark, 
+  ClockHistory, 
+  PersonGear 
+} from 'react-bootstrap-icons';
+
 export const NAV_ITEMS = [
-  { id: "home",    label: "Início",             icon: "⌂" },
-  { id: "library", label: "Biblioteca",          icon: "⊞" },
-  { id: "lost",    label: "Achados e Perdidos",  icon: "◎" },
-  { id: "courses", label: "Cursos Técnicos",     icon: "✦" },
-  { id: "history", label: "Nossa História",      icon: "◈" },
-  { id: "admin",   label: "Admin",               icon: "⚙" },
+  { id: "home",    label: "Início",            icon: House },
+  { id: "library", label: "Biblioteca",        icon: Grid },
+  { id: "lost",    label: "Achados e Perdidos", icon: QuestionCircle },
+  { id: "courses", label: "Cursos Técnicos",   icon: JournalBookmark },
+  { id: "history", label: "Nossa História",    icon: ClockHistory },
+  { id: "admin",   label: "Admin",             icon: PersonGear },
 ];
 
 export const AVISOS = [

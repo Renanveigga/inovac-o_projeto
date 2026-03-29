@@ -1,21 +1,90 @@
 .searchInput {
   width: 100%;
   padding: 10px 16px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   border: 1.5px solid var(--color-border);
   font-size: 14px;
   margin-bottom: 20px;
   outline: none;
+  background: var(--color-white);
+  color: var(--color-text-dark);
   transition: border-color 0.2s;
 }
 
-.searchInput:focus {
+.searchInput:focus { border-color: var(--color-primary-light); }
+
+.filters {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.filterGroup { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.filterLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.filterBtns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.filterBtn {
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-mid);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filterBtn:hover {
   border-color: var(--color-primary-light);
+  color: var(--color-primary-light);
+}
+
+.filterBtnActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.clearBtn {
+  align-self: flex-start;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-danger-faint);
+  background: transparent;
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.clearBtn:hover { background: var(--color-danger-faint); }
+
+.contador {
+  font-size: 13px;
+  color: var(--color-text-mid);
+  margin-bottom: 16px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 14px;
 }
 
@@ -25,3 +94,18 @@
   font-size: 14px;
   padding: 40px 0;
 }
+
+.filterSelect {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-white);
+  color: var(--color-text-dark);
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.filterSelect:focus { border-color: var(--color-primary-light); }

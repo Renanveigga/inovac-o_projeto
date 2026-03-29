@@ -1,5 +1,5 @@
 import styles from "./History.module.css";
-import { HISTORIAS } from "../../data/mockData";
+import { HISTORIAS } from "../../data/Mockdata";
 
 export default function History() {
   return (
@@ -10,30 +10,36 @@ export default function History() {
       </p>
 
       <div className={styles.timeline}>
-        {HISTORIAS.map((item, i) => (
-          <div key={i} className={styles.item}>
+        {HISTORIAS.map((item, i) => {
+          // 1. Criamos a referência do componente com letra MAIÚSCULA
+          const Icon = item.icon;
 
-            <div
-              className={styles.iconCircle}
-              style={{
-                background: item.cor + "20",
-                color: item.cor,
-                border: `2px solid ${item.cor}40`,
-              }}
-            >
-              {item.icon}
+          return (
+            <div key={i} className={styles.item}>
+              
+              <div
+                className={styles.iconCircle}
+                style={{
+                  background: item.cor + "20",
+                  color: item.cor,
+                  border: `2px solid ${item.cor}40`,
+                }}
+              >
+                {/* 2. Renderizamos como tag JSX <Icon /> */}
+                {Icon && <Icon size={24} />}
+              </div>
+
+              <div className={styles.card}>
+                <span className={styles.era} style={{ color: item.cor }}>
+                  {item.era}
+                </span>
+                <p className={styles.titulo}>{item.titulo}</p>
+                <p className={styles.texto}>{item.texto}</p>
+              </div>
+
             </div>
-
-            <div className={styles.card}>
-              <span className={styles.era} style={{ color: item.cor }}>
-                {item.era}
-              </span>
-              <p className={styles.titulo}>{item.titulo}</p>
-              <p className={styles.texto}>{item.texto}</p>
-            </div>
-
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

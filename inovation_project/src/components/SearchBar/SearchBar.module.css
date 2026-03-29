@@ -1,0 +1,126 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+}
+
+.inputBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 8px 14px;
+  transition: border-color 0.2s;
+}
+
+.inputBox:focus-within {
+  border-color: var(--color-primary-light);
+}
+
+.icon { font-size: 14px; flex-shrink: 0; }
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  background: transparent;
+  color: var(--color-text-dark);
+}
+
+.input::placeholder { color: var(--color-text-light); }
+
+.spinner { font-size: 13px; }
+
+.clear {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: var(--color-text-light);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.clear:hover { color: var(--color-text-mid); }
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 200;
+  overflow: hidden;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.empty {
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-light);
+}
+
+.group { border-bottom: 1px solid var(--color-border); }
+.group:last-child { border-bottom: none; }
+
+.groupLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 14px 6px;
+}
+
+.resultItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.resultItem:hover { background: var(--color-bg); }
+
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.disp { background: var(--color-success) !important; color: #fff; }
+.emp  { background: var(--color-text-light) !important; color: #fff; }
+
+.resultInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.resultTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.resultSub {
+  font-size: 11px;
+  color: var(--color-text-mid);
+}

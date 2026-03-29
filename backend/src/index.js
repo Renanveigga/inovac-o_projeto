@@ -9,6 +9,8 @@ import avisosRouter  from "./routes/avisos.js";
 import livrosRouter  from "./routes/livros.js";
 import achadosRouter from "./routes/achados.js";
 import cursosRouter  from "./routes/cursos.js";
+import statsRouter from "./routes/stats.js";
+import buscaRouter from "./routes/busca.js";
 
 dotenv.config();
 
@@ -27,6 +29,8 @@ app.use("/avisos",  avisosRouter);
 app.use("/livros",  livrosRouter);
 app.use("/achados", achadosRouter);
 app.use("/cursos",  cursosRouter);
+app.use("/stats", statsRouter);
+app.use("/busca", buscaRouter);
 
 app.get("/", (req, res) => {
   res.json({ mensagem: "API do Portal Escolar funcionando!" });

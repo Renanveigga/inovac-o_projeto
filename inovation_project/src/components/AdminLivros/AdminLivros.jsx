@@ -1,24 +1,26 @@
 import { useState, useEffect } from "react";
 import { getLivros, createLivro, updateLivro, deleteLivro } from "../../services/livrosService";
+import { CATEGORIAS } from "../../data/categorias";
 import styles from "./AdminLivros.module.css";
 
 export default function AdminLivros() {
   const [livros, setLivros] = useState([]);
-  const [form, setForm] = useState({ titulo: "", autor: "", categoria: "", disponivel: true });
+  const [form, setForm] = useState({
+    titulo: "", autor: "", categoria: "Literatura", disponivel: true,
+  });
 
   const carregar = () => getLivros().then((r) => setLivros(r.data));
-
   useEffect(() => { carregar(); }, []);
 
   const handleCreate = async () => {
     if (!form.titulo || !form.autor) return;
     await createLivro(form);
-    setForm({ titulo: "", autor: "", categoria: "", disponivel: true });
+    setForm({ titulo: "", autor: "", categoria: "Literatura", disponivel: true });
     carregar();
   };
 
   const handleToggleDisponivel = async (id, disponivel) => {
-    await updateLivro(id, { disponivel: !disponivel });
+    await updateLivro(id, { disponivel: !Boolean(disponivel) });
     carregar();
   };
 
@@ -32,7 +34,6 @@ export default function AdminLivros() {
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>📚 Livros</h3>
 
-      {/* Formulário */}
       <div className={styles.formCard}>
         <p className={styles.formLabel}>Adicionar novo livro</p>
         <div className={styles.formGrid}>
@@ -48,12 +49,17 @@ export default function AdminLivros() {
             value={form.autor}
             onChange={(e) => setForm({ ...form, autor: e.target.value })}
           />
-          <input
+
+          <select
             className={styles.input}
-            placeholder="Categoria"
             value={form.categoria}
             onChange={(e) => setForm({ ...form, categoria: e.target.value })}
-          />
+          >
+            {CATEGORIAS.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+
           <select
             className={styles.input}
             value={form.disponivel}
@@ -68,7 +74,7 @@ export default function AdminLivros() {
         </button>
       </div>
 
-      {/* Lista */}
+      {/* Tabela */}
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -81,31 +87,33 @@ export default function AdminLivros() {
             </tr>
           </thead>
           <tbody>
-            {livros.map((l) => (
-              <tr key={l.id}>
-                <td className={styles.tdTitle}>{l.titulo}</td>
-                <td className={styles.tdMeta}>{l.autor}</td>
-                <td className={styles.tdMeta}>{l.categoria}</td>
-                <td>
-                  {/* Toggle de status — clica para alternar */}
-                  <button
-                    className={`${styles.toggleBtn} ${l.disponivel ? styles.disponivel : styles.emprestado}`}
-                    onClick={() => handleToggleDisponivel(l.id, l.disponivel)}
-                    title="Clique para alternar status"
-                  >
-                    {l.disponivel ? "✓ Disponível" : "✗ Emprestado"}
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className={styles.btnDelete}
-                    onClick={() => handleDelete(l.id)}
-                  >
-                    Excluir
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {livros.map((l) => {
+              const disponivel = Boolean(l.disponivel);
+              return (
+                <tr key={l.id}>
+                  <td className={styles.tdTitle}>{l.titulo}</td>
+                  <td className={styles.tdMeta}>{l.autor}</td>
+                  <td className={styles.tdMeta}>{l.categoria}</td>
+                  <td>
+                    <button
+                      className={`${styles.toggleBtn} ${disponivel ? styles.disponivel : styles.emprestado}`}
+                      onClick={() => handleToggleDisponivel(l.id, l.disponivel)}
+                      title="Clique para alternar status"
+                    >
+                      {disponivel ? "✓ Disponível" : "✗ Emprestado"}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className={styles.btnDelete}
+                      onClick={() => handleDelete(l.id)}
+                    >
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

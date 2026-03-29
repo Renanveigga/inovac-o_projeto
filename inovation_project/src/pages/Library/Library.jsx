@@ -2,24 +2,39 @@ import { useState, useEffect } from "react";
 import styles from "./Library.module.css";
 import BookCard from "../../components/BookCard/BookCard";
 import { getLivros } from "../../services/livrosService";
+import { CATEGORIAS } from "../../data/categorias";
 
 export default function Library() {
-  const [livros, setLivros] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [erro, setErro] = useState(null);
-  const [search, setSearch] = useState("");
+  const [livros, setLivros]         = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [search, setSearch]         = useState("");
+  const [categoria, setCategoria]   = useState("Todas");
+  const [disponivel, setDisponivel] = useState("todos");
 
   useEffect(() => {
     getLivros()
       .then((res) => setLivros(res.data))
-      .catch(() => setErro("Erro ao carregar livros."))
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = livros.filter((b) =>
-    b.titulo.toLowerCase().includes(search.toLowerCase()) ||
-    b.autor.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = livros.filter((b) => {
+    const matchSearch = b.titulo.toLowerCase().includes(search.toLowerCase()) ||
+                        b.autor.toLowerCase().includes(search.toLowerCase());
+    const matchCat    = categoria === "Todas" || b.categoria === categoria;
+    const disp        = Boolean(b.disponivel);
+    const matchDisp   = disponivel === "todos" ||
+                        (disponivel === "disponivel" && disp) ||
+                        (disponivel === "emprestado" && !disp);
+    return matchSearch && matchCat && matchDisp;
+  });
+
+  const limparFiltros = () => {
+    setSearch("");
+    setCategoria("Todas");
+    setDisponivel("todos");
+  };
+
+  const temFiltro = search || categoria !== "Todas" || disponivel !== "todos";
 
   return (
     <div>
@@ -35,11 +50,57 @@ export default function Library() {
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {loading && <p className="page-subtitle">Carregando...</p>}
-      {erro    && <p style={{ color: "red" }}>{erro}</p>}
+      <div className={styles.filters}>
+
+        <div className={styles.filterGroup}>
+          <p className={styles.filterLabel}>Categoria</p>
+          <select
+            className={styles.filterSelect}
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+          >
+            <option value="Todas">Todas</option>
+            {CATEGORIAS.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className={styles.filterGroup}>
+          <p className={styles.filterLabel}>Disponibilidade</p>
+          <div className={styles.filterBtns}>
+            {[
+              { value: "todos",      label: "Todos"        },
+              { value: "disponivel", label: "✓ Disponível" },
+              { value: "emprestado", label: "✗ Emprestado" },
+            ].map((op) => (
+              <button
+                key={op.value}
+                className={`${styles.filterBtn} ${disponivel === op.value ? styles.filterBtnActive : ""}`}
+                onClick={() => setDisponivel(op.value)}
+              >
+                {op.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Limpar */}
+        {temFiltro && (
+          <button className={styles.clearBtn} onClick={limparFiltros}>
+            ✕ Limpar filtros
+          </button>
+        )}
+      </div>
+
+      <p className={styles.contador}>
+        {loading
+          ? "Carregando..."
+          : `${filtered.length} livro${filtered.length !== 1 ? "s" : ""} encontrado${filtered.length !== 1 ? "s" : ""}`}
+      </p>
 
       {filtered.length === 0 && !loading ? (
-        <p className={styles.empty}>Nenhum livro encontrado.</p>
+        <p className={styles.empty}>Nenhum livro encontrado com esses filtros.</p>
       ) : (
         <div className={styles.grid}>
           {filtered.map((book) => (

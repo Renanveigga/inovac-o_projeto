@@ -12,7 +12,6 @@
   z-index: 100;
 }
 
-/* ─── Logo ───────────────────────────────────────────── */
 .logo {
   padding: 0 24px 24px;
   border-bottom: 1px solid var(--color-border);
@@ -42,7 +41,6 @@
   color: var(--color-text-mid);
 }
 
-/* ─── Nav ────────────────────────────────────────────── */
 .nav {
   flex: 1;
   padding: 16px 12px;
@@ -82,11 +80,56 @@
   flex-shrink: 0;
 }
 
-/* ─── Footer ─────────────────────────────────────────── */
 .footer {
   padding: 16px 24px;
   border-top: 1px solid var(--color-border);
   font-size: 11px;
   color: var(--color-text-light);
   line-height: 1.6;
+}
+
+.themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.themeLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-mid);
+}
+
+.toggleBtn {
+  width: 40px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--color-border);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.toggleBtn.toggleDark {
+  background: var(--color-primary-light);
+}
+
+.toggleThumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s;
+}
+
+.toggleDark .toggleThumb {
+  transform: translateX(18px);
 }
