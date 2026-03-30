@@ -1,13 +1,15 @@
 import { useState } from "react";
 import styles from "./Admin.module.css";
-import AdminAvisos  from "../../components/AdminAvisos/AdminAvisos";
-import AdminLivros  from "../../components/AdminLivros/AdminLivros";
+import AdminAvisos from "../../components/AdminAvisos/AdminAvisos";
+import AdminLivros from "../../components/AdminLivros/AdminLivros";
 import AdminAchados from "../../components/AdminAchados/AdminAchados";
+import AdminEmprestimos from "../../components/AdminEmprestimos/AdminEmprestimos";
 
 const TABS = [
-  { id: "avisos",  label: "📋 Avisos"            },
-  { id: "livros",  label: "📚 Livros"             },
-  { id: "achados", label: "🔍 Achados e Perdidos"  },
+  { id: "avisos", label: "📋 Avisos" },
+  { id: "livros", label: "📚 Livros" },
+  { id: "achados", label: "🔍 Achados e Perdidos" },
+  { id: "emprestimos", label: "📖 Empréstimos" },
 ];
 
 export default function Admin({ onLogout }) {
@@ -21,7 +23,6 @@ export default function Admin({ onLogout }) {
   return (
     <div className={styles.adminLayout}>
 
-      {/* Header */}
       <header className={styles.header}>
         <div className={styles.headerLeft}>
           <div className={styles.headerIcon}>⚙️</div>
@@ -32,7 +33,6 @@ export default function Admin({ onLogout }) {
         </button>
       </header>
 
-      {/* Tabs */}
       <div className={styles.tabsBar}>
         {TABS.map((t) => (
           <button
@@ -45,12 +45,12 @@ export default function Admin({ onLogout }) {
         ))}
       </div>
 
-      {/* Conteúdo */}
       <div className={styles.body}>
         <div className={styles.contentCard}>
-          {tab === "avisos"  && <AdminAvisos  />}
-          {tab === "livros"  && <AdminLivros  />}
+          {tab === "avisos" && <AdminAvisos />}
+          {tab === "livros" && <AdminLivros />}
           {tab === "achados" && <AdminAchados />}
+          {tab === "emprestimos" && <AdminEmprestimos />}
         </div>
       </div>
 
