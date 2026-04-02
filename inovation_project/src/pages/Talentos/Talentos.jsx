@@ -1,52 +1,295 @@
 import { useState, useEffect } from "react";
+import {
+  Linkedin, Github, Instagram, FileEarmarkPdf,
+  Heart, HeartFill, Share, BoxArrowUpRight,
+} from "react-bootstrap-icons";
 import styles from "./Talentos.module.css";
-import { getTalent } from "../../services/talentosService";
+import { getTalentos } from "../../services/talentosService";
 import CadastroTalento from "./CadastroTalento";
-import { LaptopFill, BarChartLine, StarFill, Search } from "react-bootstrap-icons";
 
 const API_URL = "http://localhost:3000";
 
-function getInitials(nome) {
+const HABILIDADES_SUGERIDAS = [
+  "JavaScript","Python","React","Node.js","MySQL",
+  "Excel","Word","Gestão","Marketing","Design",
+  "Redes","Hardware","Linux","Contabilidade",
+];
+
+function getInitials(nome = "") {
   const p = nome.split(" ");
   return (p[0]?.[0] ?? "") + (p[1]?.[0] ?? "");
 }
 
-const HABILIDADES_SUGERIDAS = [
-  "JavaScript", "Python", "React", "Node.js", "MySQL",
-  "Excel", "Word", "Gestão", "Marketing", "Design",
-  "Redes", "Hardware", "Linux", "Contabilidade",
-];
+function timeAgo(date) {
+  if (!date) return "";
+  const diff = Math.floor((Date.now() - new Date(date)) / 1000);
+  if (diff < 60)    return "agora mesmo";
+  if (diff < 3600)  return `${Math.floor(diff / 60)}min`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+  return `${Math.floor(diff / 86400)}d`;
+}
+ 
+function TalentoCard({ talento, onAbrir }) {
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(Math.floor(Math.random() * 20) + 1);
 
+  const handleLike = (e) => {
+    e.stopPropagation();
+    setLiked((p) => !p);
+    setLikes((p) => liked ? p - 1 : p + 1);
+  };
+
+  const isTI = talento.curso === "TI";
+
+  return (
+    <div className={styles.post}>
+ 
+      <div className={styles.postHeader}>
+        <div className={styles.postAvatar}>
+          {talento.foto_url ? (
+            <img
+              src={`${API_URL}${talento.foto_url}`}
+              alt={talento.nome}
+              className={styles.postAvatarImg}
+            />
+          ) : (
+            <div
+              className={styles.postAvatarInitials}
+              style={{
+                background: isTI
+                  ? "linear-gradient(135deg,#1B4F72,#2E86C1)"
+                  : "linear-gradient(135deg,#7D6608,#F39C12)",
+              }}
+            >
+              {getInitials(talento.nome)}
+            </div>
+          )}
+        </div>
+        <div className={styles.postHeaderInfo}>
+          <p className={styles.postNome}>{talento.nome}</p>
+          <p className={styles.postTime}>{timeAgo(talento.criado_em)}</p>
+        </div>
+        <span
+          className={styles.cursoBadge}
+          style={{
+            background: isTI ? "#EBF5FB" : "#FEF9E7",
+            color:      isTI ? "#2E86C1" : "#F39C12",
+          }}
+        >
+          {isTI ? "💻 TI" : "📊 ADM"} · {talento.ano}
+        </span>
+      </div>
+ 
+      {talento.foto_url && (
+        <div className={styles.postCover}>
+          <img
+            src={`${API_URL}${talento.foto_url}`}
+            alt={talento.nome}
+            className={styles.postCoverImg}
+          />
+        </div>
+      )}
+ 
+      <div
+        className={styles.postBody}
+        style={{
+          borderLeft: `3px solid ${isTI ? "#2E86C1" : "#F39C12"}`,
+          background: isTI ? "#EBF5FB11" : "#FEF9E711",
+        }}
+      >
+ 
+        <div className={styles.habilidades}>
+          {talento.habilidades?.split(",").map((h, i) => (
+            <span key={i} className={styles.habTag}>{h.trim()}</span>
+          ))}
+        </div>
+ 
+        {talento.bio_html ? (
+          <div
+            className={styles.bio}
+            dangerouslySetInnerHTML={{ __html: talento.bio_html }}
+          />
+        ) : talento.bio ? (
+          <p className={styles.bio}>{talento.bio}</p>
+        ) : null}
+      </div>
+ 
+      <div className={styles.postFooter}>
+
+        <div className={styles.postActions}>
+          <button className={styles.actionBtn} onClick={handleLike}>
+            {liked
+              ? <HeartFill size={20} color="#E74C3C" />
+              : <Heart size={20} />
+            }
+            <span className={styles.actionCount}>{likes}</span>
+          </button>
+
+          <button className={styles.actionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigator.clipboard?.writeText(window.location.href);
+            }}
+          >
+            <Share size={18} />
+          </button>
+
+          <button
+            className={`${styles.actionBtn} ${styles.actionVerMais}`}
+            onClick={() => onAbrir(talento)}
+          >
+            <BoxArrowUpRight size={15} />
+            <span>Ver perfil</span>
+          </button>
+        </div>
+ 
+        <div className={styles.postLinks}>
+          {talento.linkedin && (
+            <a href={talento.linkedin} target="_blank" rel="noreferrer"
+              className={styles.postLink} onClick={(e) => e.stopPropagation()}>
+              <Linkedin size={14} /> LinkedIn
+            </a>
+          )}
+          {talento.github && (
+            <a href={talento.github} target="_blank" rel="noreferrer"
+              className={styles.postLink} onClick={(e) => e.stopPropagation()}>
+              <Github size={14} /> GitHub
+            </a>
+          )}
+          {talento.instagram && (
+            <a href={talento.instagram} target="_blank" rel="noreferrer"
+              className={styles.postLink} onClick={(e) => e.stopPropagation()}>
+              <Instagram size={14} /> Instagram
+            </a>
+          )}
+          {talento.curriculo_url && (
+            <a href={`${API_URL}${talento.curriculo_url}`} target="_blank"
+              rel="noreferrer" className={`${styles.postLink} ${styles.postLinkCurriculo}`}
+              onClick={(e) => e.stopPropagation()}>
+              <FileEarmarkPdf size={14} /> Currículo
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+ 
+function TalentoModal({ talento, onFechar }) {
+  if (!talento) return null;
+  const isTI = talento.curso === "TI";
+
+  return (
+    <div className={styles.modal} onClick={onFechar}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <button className={styles.modalClose} onClick={onFechar}>✕</button>
+ 
+        <div
+          className={styles.modalHeader}
+          style={{
+            background: isTI
+              ? "linear-gradient(135deg,#1B4F72,#2E86C1)"
+              : "linear-gradient(135deg,#7D6608,#F39C12)",
+          }}
+        >
+          <div className={styles.modalAvatar}>
+            {talento.foto_url ? (
+              <img src={`${API_URL}${talento.foto_url}`} alt={talento.nome}
+                className={styles.modalAvatarImg} />
+            ) : (
+              <span className={styles.modalAvatarInitials}>{getInitials(talento.nome)}</span>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.modalBody}>
+          <p className={styles.modalNome}>{talento.nome}</p>
+          <p className={styles.modalInfo}>{talento.curso} · {talento.ano} ano</p>
+ 
+          {talento.bio_html && (
+            <div className={styles.modalSection}>
+              <p className={styles.modalLabel}>Sobre</p>
+              <div className={styles.bioRendered}
+                dangerouslySetInnerHTML={{ __html: talento.bio_html }} />
+            </div>
+          )}
+ 
+          <div className={styles.modalSection}>
+            <p className={styles.modalLabel}>Habilidades</p>
+            <div className={styles.habilidades}>
+              {talento.habilidades?.split(",").map((h, i) => (
+                <span key={i} className={styles.habTag}>{h.trim()}</span>
+              ))}
+            </div>
+          </div>
+ 
+          {(talento.email || talento.linkedin || talento.github || talento.instagram || talento.curriculo_url) && (
+            <div className={styles.modalSection}>
+              <p className={styles.modalLabel}>Contato</p>
+              <div className={styles.modalContatos}>
+                {talento.email && (
+                  <a href={`mailto:${talento.email}`} className={styles.contatoItem}>
+                    📧 <span>{talento.email}</span>
+                  </a>
+                )}
+                {talento.linkedin && (
+                  <a href={talento.linkedin} target="_blank" rel="noreferrer" className={styles.contatoItem}>
+                    <Linkedin size={14} /> <span>LinkedIn</span>
+                  </a>
+                )}
+                {talento.github && (
+                  <a href={talento.github} target="_blank" rel="noreferrer" className={styles.contatoItem}>
+                    <Github size={14} /> <span>GitHub</span>
+                  </a>
+                )}
+                {talento.instagram && (
+                  <a href={talento.instagram} target="_blank" rel="noreferrer" className={styles.contatoItem}>
+                    <Instagram size={14} /> <span>Instagram</span>
+                  </a>
+                )}
+                {talento.curriculo_url && (
+                  <a href={`${API_URL}${talento.curriculo_url}`} target="_blank"
+                    rel="noreferrer" className={styles.contatoItem}>
+                    <FileEarmarkPdf size={14} /> <span>Ver Currículo</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+ 
 export default function Talentos() {
-  const [talentos, setTalentos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filtroCurso, setFiltroCurso] = useState("");
-  const [filtroHab, setFiltroHab] = useState("");
+  const [talentos, setTalentos]         = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [filtroCurso, setFiltroCurso]   = useState("");
+  const [filtroHab, setFiltroHab]       = useState("");
+  const [ordem, setOrdem]               = useState("recente");
   const [showCadastro, setShowCadastro] = useState(false);
   const [talentoAberto, setTalentoAberto] = useState(null);
 
   const carregar = (filtros = {}) => {
     setLoading(true);
-    getTalent(filtros)
+    getTalentos(filtros)
       .then((r) => setTalentos(r.data))
       .finally(() => setLoading(false));
   };
 
   useEffect(() => { carregar(); }, []);
 
-  const [ordem, setOrdem] = useState("recente");
-
   const handleFiltrar = () => {
     const filtros = {};
-    if (filtroCurso) filtros.curso = filtroCurso;
-    if (filtroHab) filtros.habilidade = filtroHab;
-    if (ordem) filtros.ordem = ordem;
+    if (filtroCurso) filtros.curso      = filtroCurso;
+    if (filtroHab)   filtros.habilidade = filtroHab;
+    if (ordem)       filtros.ordem      = ordem;
     carregar(filtros);
   };
 
   const handleLimpar = () => {
-    setFiltroCurso("");
-    setFiltroHab("");
+    setFiltroCurso(""); setFiltroHab(""); setOrdem("recente");
     carregar();
   };
 
@@ -56,10 +299,10 @@ export default function Talentos() {
 
   return (
     <div>
-
-      <div className={styles.header}>
+ 
+      <div className={styles.pageHeader}>
         <div>
-          <h2 className="page-title"><StarFill /> Banco de Talentos</h2>
+          <h2 className="page-title">🌟 Banco de Talentos</h2>
           <p className="page-subtitle">
             Conectando alunos do colégio ao mercado de trabalho.
           </p>
@@ -68,7 +311,7 @@ export default function Talentos() {
           + Cadastrar meu perfil
         </button>
       </div>
-
+ 
       <div className={styles.filtrosCard}>
         <div className={styles.filtroRow}>
 
@@ -76,22 +319,11 @@ export default function Talentos() {
             <label className={styles.filtroLabel}>Curso</label>
             <div className={styles.filtroBtns}>
               {["", "TI", "ADM"].map((c) => (
-                <button
-                  key={c}
+                <button key={c}
                   className={`${styles.filtroBtn} ${filtroCurso === c ? styles.filtroBtnActive : ""}`}
                   onClick={() => setFiltroCurso(c)}
                 >
-                  {c === "" ? (
-                    "Todos"
-                  ) : c === "TI" ? (
-                    <>
-                      <LaptopFill className="me-1" /> TI
-                    </>
-                  ) : (
-                    <>
-                      <BarChartLine className="me-1" /> ADM
-                    </>
-                  )}
+                  {c === "" ? "Todos" : c === "TI" ? "💻 TI" : "📊 ADM"}
                 </button>
               ))}
             </div>
@@ -99,8 +331,7 @@ export default function Talentos() {
 
           <div className={styles.filtroGroup}>
             <label className={styles.filtroLabel}>Competência</label>
-            <input
-              className={styles.filtroInput}
+            <input className={styles.filtroInput}
               placeholder="Ex: JavaScript, Excel..."
               value={filtroHab}
               onChange={(e) => setFiltroHab(e.target.value)}
@@ -110,164 +341,56 @@ export default function Talentos() {
 
           <div className={styles.filtroGroup}>
             <label className={styles.filtroLabel}>Ordenar por</label>
-            <select
-              className={styles.filtroSelect}
-              value={ordem}
-              onChange={(e) => setOrdem(e.target.value)}
-            >
+            <select className={styles.filtroSelect}
+              value={ordem} onChange={(e) => setOrdem(e.target.value)}>
               <option value="recente">Mais recentes</option>
               <option value="relevancia">Mais completos</option>
             </select>
           </div>
 
-        </div>
+          <div className={styles.filtroAcoes}>
+            <button className={styles.btnFiltrar} onClick={handleFiltrar}>Buscar</button>
+            {(filtroCurso || filtroHab || ordem !== "recente") && (
+              <button className={styles.btnLimpar} onClick={handleLimpar}>✕ Limpar</button>
+            )}
+          </div>
 
+        </div>
+ 
         <div className={styles.tags}>
           <span className={styles.tagsLabel}>Populares:</span>
           {HABILIDADES_SUGERIDAS.map((h) => (
-            <button
-              key={h}
+            <button key={h}
               className={`${styles.tag} ${filtroHab === h ? styles.tagActive : ""}`}
-              onClick={() => { setFiltroHab(h); }}
+              onClick={() => setFiltroHab(h)}
             >
               {h}
             </button>
           ))}
         </div>
       </div>
-
+ 
       <p className={styles.contador}>
-        {loading ? "Buscando talentos..." : `${talentos.length} talento${talentos.length !== 1 ? "s" : ""} encontrado${talentos.length !== 1 ? "s" : ""}`}
+        {loading
+          ? "Buscando talentos..."
+          : `${talentos.length} talento${talentos.length !== 1 ? "s" : ""} encontrado${talentos.length !== 1 ? "s" : ""}`
+        }
       </p>
-
+ 
       {talentos.length === 0 && !loading ? (
         <div className={styles.empty}>
-          <p className={styles.emptyIcon}><Search /></p>
+          <p className={styles.emptyIcon}>🔍</p>
           <p className={styles.emptyText}>Nenhum talento encontrado com esses filtros.</p>
         </div>
       ) : (
-        <div className={styles.grid}>
+        <div className={styles.feedList}>
           {talentos.map((t) => (
-            <div key={t.id} className={styles.card} onClick={() => setTalentoAberto(t)}>
-
-              <div className={`${styles.cardHeader} ${t.curso === "TI" ? styles.headerTI : styles.headerADM}`}>
-                <div className={styles.avatar}>
-                  {t.foto_url ? (
-                    <img src={`${API_URL}${t.foto_url}`} alt={t.nome} className={styles.avatarImg} />
-                  ) : (
-                    <span className={styles.avatarInitials}>{getInitials(t.nome)}</span>
-                  )}
-                </div>
-                <span className={styles.cursoBadge}>{t.curso}</span>
-              </div>
-
-              <div className={styles.cardBody}>
-                <p className={styles.cardNome}>{t.nome}</p>
-                <p className={styles.cardAno}>{t.ano} ano</p>
-
-                <div className={styles.habilidades}>
-                  {t.habilidades.split(",").slice(0, 3).map((h, i) => (
-                    <span key={i} className={styles.habilidadeTag}>
-                      {h.trim()}
-                    </span>
-                  ))}
-                  {t.habilidades.split(",").length > 3 && (
-                    <span className={styles.habilidadeExtra}>
-                      +{t.habilidades.split(",").length - 3}
-                    </span>
-                  )}
-                </div>
-
-                <div className={styles.links}>
-                  {t.linkedin && <span className={styles.linkIcon} title="LinkedIn">💼</span>}
-                  {t.github && <span className={styles.linkIcon} title="GitHub">💻</span>}
-                  {t.curriculo_url && <span className={styles.linkIcon} title="Currículo">📄</span>}
-                </div>
-              </div>
-
-            </div>
+            <TalentoCard key={t.id} talento={t} onAbrir={setTalentoAberto} />
           ))}
         </div>
       )}
-
-      {talentoAberto && (
-        <div className={styles.modal} onClick={() => setTalentoAberto(null)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.modalClose} onClick={() => setTalentoAberto(null)}>✕</button>
-
-            <div className={`${styles.modalHeader} ${talentoAberto.curso === "TI" ? styles.headerTI : styles.headerADM}`}>
-              <div className={styles.modalAvatar}>
-                {talentoAberto.foto_url
-                  ? <img src={`${API_URL}${talentoAberto.foto_url}`} alt={talentoAberto.nome} className={styles.avatarImg} />
-                  : <span className={styles.avatarInitials}>{getInitials(talentoAberto.nome)}</span>
-                }
-              </div>
-            </div>
-
-            <div className={styles.modalBody}>
-              <p className={styles.modalNome}>{talentoAberto.nome}</p>
-              <p className={styles.modalInfo}>{talentoAberto.curso} · {talentoAberto.ano} ano</p>
-
-              {talentoAberto.bio_html && (
-                <div className={styles.modalSection}>
-                  <p className={styles.modalLabel}>Sobre</p>
-                  <div
-                    className={styles.bioRendered}
-                    dangerouslySetInnerHTML={{ __html: talentoAberto.bio_html }}
-                  />
-                </div>
-              )}
-
-              <div className={styles.modalSection}>
-                <p className={styles.modalLabel}>Habilidades</p>
-                <div className={styles.habilidades}>
-                  {talentoAberto.habilidades.split(",").map((h, i) => (
-                    <span key={i} className={styles.habilidadeTag}>{h.trim()}</span>
-                  ))}
-                </div>
-              </div>
-
-              {(talentoAberto.email || talentoAberto.linkedin || talentoAberto.github || talentoAberto.instagram) && (
-                <div className={styles.modalSection}>
-                  <p className={styles.modalLabel}>Contato</p>
-                  <div className={styles.modalContatos}>
-                    {talentoAberto.email && (
-                      <a href={`mailto:${talentoAberto.email}`} className={styles.contatoItem}>
-                        <span className={styles.contatoIcon}>📧</span>
-                        <span>{talentoAberto.email}</span>
-                      </a>
-                    )}
-                    {talentoAberto.linkedin && (
-                      <a href={talentoAberto.linkedin} target="_blank" rel="noreferrer" className={styles.contatoItem}>
-                        <span className={styles.contatoIcon}>💼</span>
-                        <span>LinkedIn</span>
-                      </a>
-                    )}
-                    {talentoAberto.github && (
-                      <a href={talentoAberto.github} target="_blank" rel="noreferrer" className={styles.contatoItem}>
-                        <span className={styles.contatoIcon}>💻</span>
-                        <span>GitHub</span>
-                      </a>
-                    )}
-                    {talentoAberto.instagram && (
-                      <a href={talentoAberto.instagram} target="_blank" rel="noreferrer" className={styles.contatoItem}>
-                        <span className={styles.contatoIcon}>📸</span>
-                        <span>Instagram</span>
-                      </a>
-                    )}
-                    {talentoAberto.curriculo_url && (
-                      <a href={`${API_URL}${talentoAberto.curriculo_url}`} target="_blank" rel="noreferrer" className={styles.contatoItem}>
-                        <span className={styles.contatoIcon}>📄</span>
-                        <span>Ver Currículo</span>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+ 
+      <TalentoModal talento={talentoAberto} onFechar={() => setTalentoAberto(null)} />
     </div>
   );
 }

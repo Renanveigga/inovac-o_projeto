@@ -6,44 +6,56 @@ export const getFeed = async (req, res) => {
     const offset = (page - 1) * limit;
 
     const [avisos] = await db.query(
-      `SELECT id, titulo as titulo, descricao, tipo, data_evento as data,
+      `SELECT id, titulo, descricao, tipo, data_evento as data,
+              NULL as foto_url, NULL as sala, NULL as curso,
+              NULL as habilidades, NULL as modalidade, NULL as medalha,
               criado_em, 'aviso' as tipo_feed
-       FROM avisos ORDER BY criado_em DESC LIMIT 5`
+       FROM avisos ORDER BY criado_em DESC LIMIT 6`
     );
 
     const [achados] = await db.query(
-      `SELECT id, descricao as titulo, sala, foto_url,
-              retirado, criado_em, 'achado' as tipo_feed
-       FROM achados_perdidos
-       WHERE retirado = false ORDER BY criado_em DESC LIMIT 5`
+      `SELECT id, descricao as titulo, NULL as descricao, NULL as tipo,
+              NULL as data, foto_url, sala, NULL as curso,
+              NULL as habilidades, NULL as modalidade, NULL as medalha,
+              criado_em, 'achado' as tipo_feed
+       FROM achados_perdidos WHERE retirado = false
+       ORDER BY criado_em DESC LIMIT 4`
     );
 
     const [talentos] = await db.query(
-      `SELECT id, nome as titulo, curso, ano, habilidades,
-              foto_url, bio, criado_em, 'talento' as tipo_feed
-       FROM talentos
-       WHERE status = 'aprovado' ORDER BY criado_em DESC LIMIT 5`
+      `SELECT id, nome as titulo, bio as descricao, NULL as tipo,
+              NULL as data, foto_url, NULL as sala, curso,
+              habilidades, NULL as modalidade, NULL as medalha,
+              criado_em, 'talento' as tipo_feed
+       FROM talentos WHERE status = 'aprovado'
+       ORDER BY criado_em DESC LIMIT 4`
     );
 
     const [livros] = await db.query(
-      `SELECT id, titulo, autor, categoria, disponivel,
+      `SELECT id, titulo, autor as descricao, NULL as tipo,
+              NULL as data, NULL as foto_url, NULL as sala, NULL as curso,
+              NULL as habilidades, categoria as modalidade, NULL as medalha,
               criado_em, 'livro' as tipo_feed
-       FROM livros ORDER BY criado_em DESC LIMIT 5`
+       FROM livros ORDER BY criado_em DESC LIMIT 4`
     );
 
-    const feed = [
-      ...avisos,
-      ...achados,
-      ...talentos,
-      ...livros,
-    ].sort((a, b) => new Date(b.criado_em) - new Date(a.criado_em));
+    const [esportes] = await db.query(
+      `SELECT id, titulo, resumo as descricao, NULL as tipo,
+              data_evento as data, foto_url, NULL as sala, NULL as curso,
+              NULL as habilidades, modalidade, medalha,
+              criado_em, 'esporte' as tipo_feed
+       FROM esportes ORDER BY criado_em DESC LIMIT 4`
+    );
+
+    const feed = [...avisos, ...achados, ...talentos, ...livros, ...esportes]
+      .sort((a, b) => new Date(b.criado_em) - new Date(a.criado_em));
 
     const paginado = feed.slice(offset, offset + Number(limit));
 
     res.json({
-      items: paginado,
-      total: feed.length,
-      page: Number(page),
+      items:   paginado,
+      total:   feed.length,
+      page:    Number(page),
       hasMore: offset + Number(limit) < feed.length,
     });
   } catch (error) {

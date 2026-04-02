@@ -5,6 +5,7 @@ import AdminLivros from "../../components/AdminLivros/AdminLivros";
 import AdminAchados from "../../components/AdminAchados/AdminAchados";
 import AdminEmprestimos from "../../components/AdminEmprestimos/AdminEmprestimos";
 import AdminTalentos from "../../components/AdminTalentos/AdminTalentos";
+import AdminEsportes from "../../components/AdminEsportes/AdminEsportes";
 
 const TABS = [
   { id: "avisos",      label: "📋 Avisos"            },
@@ -12,6 +13,7 @@ const TABS = [
   { id: "achados",     label: "🔍 Achados e Perdidos" },
   { id: "emprestimos", label: "📖 Empréstimos"        },
   { id: "talentos",    label: "🌟 Talentos"           },
+  { id: "esportes",    label: "🏆 Esportes"           },
 ];
 
 export default function Admin({ onLogout }) {
@@ -54,6 +56,7 @@ export default function Admin({ onLogout }) {
           {tab === "achados" && <AdminAchados />}
           {tab === "emprestimos" && <AdminEmprestimos />}
           {tab === "talentos" && <AdminTalentos />}
+          {tab === "esportes" && <AdminEsportes />}
         </div>
       </div>
 

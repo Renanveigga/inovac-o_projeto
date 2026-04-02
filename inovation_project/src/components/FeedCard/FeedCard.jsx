@@ -1,4 +1,9 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Heart, HeartFill, Share, BoxArrowUpRight,
+  Trophy, Search, Book, Megaphone, GeoAlt
+} from "react-bootstrap-icons";
 import styles from "./FeedCard.module.css";
 
 const API_URL = "http://localhost:3000";
@@ -10,19 +15,32 @@ const TIPO_COLORS = {
   palestra: "#1E8449",
 };
 
+const FONTE_CONFIG = {
+  aviso:   { label: "Coordenação",       icon: <Megaphone size={14} />,  cor: "#8E44AD" },
+  livro:   { label: "Biblioteca",        icon: <Book size={14} />,        cor: "#2E86C1" },
+  achado:  { label: "Achados & Perdidos",icon: <Search size={14} />,      cor: "#E67E22" },
+  talento: { label: "Banco de Talentos", icon: "🌟",                      cor: "#27AE60" },
+  esporte: { label: "Esportes",          icon: <Trophy size={14} />,      cor: "#F1C40F" },
+};
+
 const ROTAS = {
   aviso:   "/",
   livro:   "/biblioteca",
   achado:  "/achados",
   talento: "/talentos",
+  esporte: "/esportes",
+};
+
+const MEDALHA_EMOJI = {
+  ouro: "🥇", prata: "🥈", bronze: "🥉", participacao: "🏅",
 };
 
 function timeAgo(date) {
   const diff = Math.floor((Date.now() - new Date(date)) / 1000);
-  if (diff < 60)     return "agora mesmo";
-  if (diff < 3600)   return `${Math.floor(diff / 60)}min atrás`;
-  if (diff < 86400)  return `${Math.floor(diff / 3600)}h atrás`;
-  return `${Math.floor(diff / 86400)}d atrás`;
+  if (diff < 60)    return "agora mesmo";
+  if (diff < 3600)  return `${Math.floor(diff / 60)}min`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+  return `${Math.floor(diff / 86400)}d`;
 }
 
 function getInitials(nome = "") {
@@ -32,108 +50,136 @@ function getInitials(nome = "") {
 
 export default function FeedCard({ item }) {
   const navigate = useNavigate();
+  const [liked, setLiked]     = useState(false);
+  const [likes, setLikes]     = useState(Math.floor(Math.random() * 30) + 1);
+  const fonte = FONTE_CONFIG[item.tipo_feed] ?? FONTE_CONFIG.aviso;
 
-  const handleClick = () => navigate(ROTAS[item.tipo_feed] ?? "/");
+  const handleLike = (e) => {
+    e.stopPropagation();
+    setLiked((p) => !p);
+    setLikes((p) => liked ? p - 1 : p + 1);
+  };
+
+  const handleShare = (e) => {
+    e.stopPropagation();
+    navigator.clipboard?.writeText(window.location.origin + ROTAS[item.tipo_feed]);
+  };
+
+  const hasImage = item.foto_url;
 
   return (
-    <div className={styles.card} onClick={handleClick}>
+    <div className={styles.post}>
 
-      {item.tipo_feed === "aviso" && (
-        <>
-          <div className={styles.cardLeft}>
-            <div className={styles.iconBox}
-              style={{ background: TIPO_COLORS[item.tipo] + "22", color: TIPO_COLORS[item.tipo] }}>
-              {item.tipo === "evento"   ? "🎉" :
-               item.tipo === "prova"    ? "📝" :
-               item.tipo === "feriado"  ? "🗓️" : "🎤"}
-            </div>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.cardMeta}>
-              <span className={styles.badge}
-                style={{ background: TIPO_COLORS[item.tipo], color: "#fff" }}>
-                {item.tipo}
-              </span>
-              <span className={styles.time}>{timeAgo(item.criado_em)}</span>
-            </div>
-            <p className={styles.cardTitle}>{item.titulo}</p>
-            {item.descricao && <p className={styles.cardDesc}>{item.descricao}</p>}
-            {item.data && <p className={styles.cardSub}>📅 {item.data?.slice(0, 10)}</p>}
-          </div>
-        </>
+      <div className={styles.postHeader}>
+        <div className={styles.postAvatar} style={{ background: fonte.cor + "22", color: fonte.cor }}>
+          {typeof fonte.icon === "string" ? fonte.icon : fonte.icon}
+        </div>
+        <div className={styles.postHeaderInfo}>
+          <p className={styles.postFonte}>{fonte.label}</p>
+          <p className={styles.postTime}>{timeAgo(item.criado_em)}</p>
+        </div>
+        {item.tipo_feed === "aviso" && item.tipo && (
+          <span className={styles.postTipoBadge}
+            style={{ background: TIPO_COLORS[item.tipo] + "22", color: TIPO_COLORS[item.tipo] }}>
+            {item.tipo}
+          </span>
+        )}
+        {item.tipo_feed === "esporte" && item.medalha && (
+          <span className={styles.postTipoBadge} style={{ background: "#FEF9E7", color: "#F39C12" }}>
+            {MEDALHA_EMOJI[item.medalha]} {item.medalha}
+          </span>
+        )}
+        {item.tipo_feed === "talento" && item.curso && (
+          <span className={styles.postTipoBadge}
+            style={{ background: item.curso === "TI" ? "#EBF5FB" : "#FEF9E7",
+                     color:      item.curso === "TI" ? "#2E86C1" : "#F39C12" }}>
+            {item.curso === "TI" ? "💻" : "📊"} {item.curso}
+          </span>
+        )}
+      </div>
+
+      {hasImage && (
+        <div className={styles.postImage}>
+          <img src={`${API_URL}${item.foto_url}`} alt={item.titulo} className={styles.postImg} />
+        </div>
       )}
 
-      {item.tipo_feed === "livro" && (
-        <>
-          <div className={styles.cardLeft}>
-            <div className={styles.iconBox} style={{ background: "#EBF5FB", color: "#2E86C1" }}>
-              📚
-            </div>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.cardMeta}>
-              <span className={`${styles.badge} ${Boolean(item.disponivel) ? styles.badgeDisp : styles.badgeEmp}`}>
-                {Boolean(item.disponivel) ? "Disponível" : "Emprestado"}
-              </span>
-              <span className={styles.time}>{timeAgo(item.criado_em)}</span>
-            </div>
-            <p className={styles.cardTitle}>{item.titulo}</p>
-            <p className={styles.cardSub}>{item.autor} · {item.categoria}</p>
-          </div>
-        </>
-      )}
-
-      {item.tipo_feed === "achado" && (
-        <>
-          <div className={styles.cardLeft}>
-            {item.foto_url ? (
-              <img src={`${API_URL}${item.foto_url}`} alt={item.titulo}
-                className={styles.foto} />
-            ) : (
-              <div className={styles.iconBox} style={{ background: "#FEF9E7", color: "#F39C12" }}>
-                🔍
-              </div>
-            )}
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.cardMeta}>
-              <span className={`${styles.badge} ${styles.badgePendente}`}>Aguardando</span>
-              <span className={styles.time}>{timeAgo(item.criado_em)}</span>
-            </div>
-            <p className={styles.cardTitle}>{item.titulo}</p>
-            <p className={styles.cardSub}>📍 {item.sala}</p>
-          </div>
-        </>
-      )}
-
-      {item.tipo_feed === "talento" && (
-        <>
-          <div className={styles.cardLeft}>
-            {item.foto_url ? (
-              <img src={`${API_URL}${item.foto_url}`} alt={item.titulo}
-                className={styles.foto} />
-            ) : (
-              <div className={`${styles.avatarBox} ${item.curso === "TI" ? styles.avatarTI : styles.avatarADM}`}>
+      {!hasImage && (
+        <div className={styles.postBody}
+          style={{ background: fonte.cor + "11", borderLeft: `3px solid ${fonte.cor}` }}>
+          {item.tipo_feed === "talento" ? (
+            <div className={styles.postTalentoBody}>
+              <div className={styles.postTalentoAvatar}
+                style={{ background: item.curso === "TI"
+                  ? "linear-gradient(135deg,#1B4F72,#2E86C1)"
+                  : "linear-gradient(135deg,#7D6608,#F39C12)" }}>
                 {getInitials(item.titulo)}
               </div>
-            )}
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.cardMeta}>
-              <span className={`${styles.badge} ${item.curso === "TI" ? styles.badgeTI : styles.badgeADM}`}>
-                {item.curso}
-              </span>
-              <span className={styles.time}>{timeAgo(item.criado_em)}</span>
+              <div>
+                <p className={styles.postTalentoNome}>{item.titulo}</p>
+                <p className={styles.postTalentoHabs}>
+                  {item.habilidades?.split(",").slice(0, 3).join(" · ")}
+                </p>
+              </div>
             </div>
-            <p className={styles.cardTitle}>{item.titulo}</p>
-            <p className={styles.cardSub}>
-              {item.habilidades?.split(",").slice(0, 2).join(", ")}
-            </p>
-          </div>
-        </>
+          ) : item.tipo_feed === "livro" ? (
+            <div className={styles.postLivroBody}>
+              <span className={styles.postLivroIcon}>📚</span>
+              <div>
+                <p className={styles.postLivroTitulo}>{item.titulo}</p>
+                <p className={styles.postLivroAutor}>{item.descricao}</p>
+                <span className={styles.postLivroCat}>{item.modalidade}</span>
+              </div>
+            </div>
+          ) : (
+            <p className={styles.postBodyText}>{item.titulo}</p>
+          )}
+        </div>
       )}
 
-      <span className={styles.cardArrow}>→</span>
+      <div className={styles.postFooter}>
+
+        <div className={styles.postActions}>
+          <button className={styles.postActionBtn} onClick={handleLike}>
+            {liked
+              ? <HeartFill size={20} color="#E74C3C" />
+              : <Heart size={20} />
+            }
+            <span className={styles.postActionCount}>{likes}</span>
+          </button>
+
+          <button className={styles.postActionBtn} onClick={handleShare}>
+            <Share size={18} />
+          </button>
+
+          <button
+            className={`${styles.postActionBtn} ${styles.postVerMais}`}
+            onClick={() => navigate(ROTAS[item.tipo_feed] ?? "/")}
+          >
+            <BoxArrowUpRight size={16} />
+            <span>Ver mais</span>
+          </button>
+        </div>
+
+        <div className={styles.postDesc}>
+          {hasImage && <p className={styles.postDescTitle}>{item.titulo}</p>}
+          {item.descricao && (
+            <p className={styles.postDescText}>
+              {item.descricao?.length > 100
+                ? item.descricao.slice(0, 100) + "..."
+                : item.descricao}
+            </p>
+          )}
+          {item.tipo_feed === "achado" && item.sala && (
+            <p className={styles.postDescMeta}>
+              <GeoAlt size={11} /> {item.sala}
+            </p>
+          )}
+          {item.tipo_feed === "esporte" && item.modalidade && (
+            <p className={styles.postDescMeta}>🏅 {item.modalidade}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

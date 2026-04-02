@@ -11,6 +11,7 @@ const ROUTE_MAP = {
   history: "/historia",
   admin: "/admin",
   talentos: "/talentos",
+  esportes: "/esportes",
 };
 
 export default function Sidebar({ onNavigate, dark, toggleTheme }) {

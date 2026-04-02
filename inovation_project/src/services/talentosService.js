@@ -1,6 +1,6 @@
 import api from "./api.js";
 
-export const getTalent = (filtros = {}) => {
+export const getTalentos = (filtros = {}) => { 
   const params = new URLSearchParams(filtros).toString();
   return api.get(`/talentos${params ? `?${params}` : ""}`);
 };

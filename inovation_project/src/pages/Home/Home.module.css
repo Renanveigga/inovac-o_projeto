@@ -14,7 +14,6 @@
   gap: 4px;
   margin-bottom: 20px;
   border-bottom: 1px solid var(--color-border);
-  padding-bottom: 0;
 }
 
 .tab {
@@ -36,20 +35,20 @@
   color: var(--color-primary);
   border-bottom-color: var(--color-primary);
 }
-
-.feedSection { 
-  display: flex;
-  flex-direction: column;
-}
+ 
+.feedSection { width: 100%; }
 
 .feedList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .sentinel { height: 20px; }
-
+ 
 .loadingFeed {
   display: flex;
   justify-content: center;
@@ -74,8 +73,8 @@
 .loadingDots span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes bounce {
-  from { transform: translateY(0); opacity: 0.4; }
-  to   { transform: translateY(-6px); opacity: 1; }
+  from { transform: translateY(0);   opacity: 0.4; }
+  to   { transform: translateY(-6px); opacity: 1;   }
 }
 
 .feedFim {
@@ -83,17 +82,230 @@
   font-size: 13px;
   color: var(--color-text-light);
   padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
-
-.sectionTitle {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  margin-bottom: 16px;
-}
-
+ 
 .avisosList {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+ 
+.post {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  transition: box-shadow 0.2s;
+}
+
+.post:hover { box-shadow: var(--shadow-md); }
+ 
+.postHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.postAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.postHeaderInfo { flex: 1; min-width: 0; }
+
+.postFonte {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.postTime {
+  font-size: 11px;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.postTipoBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  text-transform: capitalize;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+ 
+.postImage {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.postImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.post:hover .postImg { transform: scale(1.02); }
+ 
+.postBody {
+  padding: 20px;
+}
+
+.postBodyText {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  line-height: 1.4;
+  margin: 0;
+}
+ 
+.postTalentoBody {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.postTalentoAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.postTalentoNome {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-bottom: 4px;
+}
+
+.postTalentoHabs {
+  font-size: 12px;
+  color: var(--color-text-mid);
+}
+ 
+.postLivroBody {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.postLivroIcon { font-size: 36px; flex-shrink: 0; }
+
+.postLivroTitulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-bottom: 2px;
+}
+
+.postLivroAutor {
+  font-size: 12px;
+  color: var(--color-text-mid);
+  margin-bottom: 6px;
+}
+
+.postLivroCat {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-faint);
+  color: var(--color-primary-light);
+}
+ 
+.postFooter {
+  padding: 10px 16px 14px;
+}
+
+.postActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.postActionBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-mid);
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, color 0.15s;
+}
+
+.postActionBtn:hover {
+  background: var(--color-bg);
+  color: var(--color-text-dark);
+}
+
+.postActionCount {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-mid);
+}
+
+.postVerMais {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary-light);
+}
+
+.postVerMais:hover { background: var(--color-primary-faint); }
+ 
+.postDescTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-bottom: 3px;
+}
+
+.postDescText {
+  font-size: 13px;
+  color: var(--color-text-mid);
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.postDescMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--color-text-light);
 }

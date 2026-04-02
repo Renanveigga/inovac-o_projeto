@@ -4,17 +4,18 @@ import { buscar } from "../../services/buscaService";
 import styles from "./SearchBar.module.css";
 
 const TIPO_COLORS = {
-  evento:   "#2E86C1",
-  prova:    "#C0392B",
-  feriado:  "#8E44AD",
+  evento: "#2E86C1",
+  prova: "#C0392B",
+  feriado: "#8E44AD",
   palestra: "#1E8449",
 };
 
 const CATEGORIAS_CONFIG = [
-  { key: "avisos",   label: "📋 Avisos",            rota: "/"          },
-  { key: "livros",   label: "📚 Biblioteca",         rota: "/biblioteca"},
-  { key: "achados",  label: "🔍 Achados e Perdidos", rota: "/achados"   },
-  { key: "talentos", label: "🌟 Banco de Talentos",  rota: "/talentos"  },
+  { key: "avisos", label: "📋 Avisos", rota: "/" },
+  { key: "livros", label: "📚 Biblioteca", rota: "/biblioteca" },
+  { key: "achados", label: "🔍 Achados e Perdidos", rota: "/achados" },
+  { key: "talentos", label: "🌟 Banco de Talentos", rota: "/talentos" },
+  { key: "esportes", label: "🏆 Esportes", rota: "/esportes" },
 ];
 
 function useDebounce(value, delay) {
@@ -27,12 +28,12 @@ function useDebounce(value, delay) {
 }
 
 export default function SearchBar() {
-  const [query, setQuery]     = useState("");
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [aberto, setAberto]   = useState(false);
-  const navigate              = useNavigate();
-  const wrapperRef            = useRef();
+  const [aberto, setAberto] = useState(false);
+  const navigate = useNavigate();
+  const wrapperRef = useRef();
 
   const debouncedQuery = useDebounce(query, 400);
 
@@ -166,7 +167,20 @@ export default function SearchBar() {
                             </span>
                             <div className={styles.resultInfo}>
                               <span className={styles.resultTitle}>{item.nome}</span>
-                              <span className={styles.resultSub}>{item.habilidades?.split(",").slice(0,2).join(", ")}</span>
+                              <span className={styles.resultSub}>{item.habilidades?.split(",").slice(0, 2).join(", ")}</span>
+                            </div>
+                          </>
+                        )}
+
+                        {key === "esportes" && (
+                          <>
+                            <span className={`${styles.badge}`}
+                              style={{ background: "#F1C40F" }}>
+                              {item.medalha ?? "🏅"}
+                            </span>
+                            <div className={styles.resultInfo}>
+                              <span className={styles.resultTitle}>{item.titulo}</span>
+                              <span className={styles.resultSub}>{item.modalidade} · {item.data_evento?.slice(0, 10)}</span>
                             </div>
                           </>
                         )}

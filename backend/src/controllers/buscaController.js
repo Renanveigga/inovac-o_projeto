@@ -4,7 +4,7 @@ export const buscar = async (req, res) => {
   try {
     const { q } = req.query;
     if (!q || q.trim().length < 2) {
-      return res.json({ avisos: [], livros: [], achados: [], talentos: [] });
+      return res.json({ avisos: [], livros: [], achados: [], talentos: [], esportes: [] });
     }
 
     const termo = `%${q}%`;
@@ -29,14 +29,18 @@ export const buscar = async (req, res) => {
 
     const [talentos] = await db.query(
       `SELECT id, nome, curso, ano, habilidades, foto_url
-       FROM talentos
-       WHERE status = 'aprovado'
-         AND (nome LIKE ? OR habilidades LIKE ? OR curso LIKE ?)
-       LIMIT 4`,
+       FROM talentos WHERE status = 'aprovado'
+         AND (nome LIKE ? OR habilidades LIKE ? OR curso LIKE ?) LIMIT 4`,
       [termo, termo, termo]
     );
 
-    res.json({ avisos, livros, achados, talentos });
+    const [esportes] = await db.query(
+      `SELECT id, titulo, modalidade, medalha, data_evento, foto_url
+       FROM esportes WHERE titulo LIKE ? OR modalidade LIKE ? OR resumo LIKE ? LIMIT 4`,
+      [termo, termo, termo]
+    );
+
+    res.json({ avisos, livros, achados, talentos, esportes });
   } catch (error) {
     res.status(500).json({ erro: "Erro na busca", detalhe: error.message });
   }

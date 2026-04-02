@@ -13,6 +13,7 @@ import History   from "./pages/History/History";
 import Login     from "./pages/Admin/Login";
 import Admin     from "./pages/Admin/Admin";
 import Talentos from "./pages/Talentos/Talentos";
+import Esportes from "./pages/Esportes/Esportes";
 
 const ROUTE_MAP = {
   home:    "/",
@@ -22,6 +23,7 @@ const ROUTE_MAP = {
   history: "/historia",
   admin:   "/admin",
   talentos: "/talentos",
+  esportes: "/esportes",
 };
 
 export default function App() {
@@ -67,6 +69,7 @@ export default function App() {
             <Route path="/admin"      element={<Login onLogin={handleLogin} />} />
             <Route path="*"           element={<Navigate to="/" />} />
             <Route path="/talentos"   element={<Talentos />} />
+            <Route path="/esportes" element={<Esportes />} />
           </Routes>
         </main>
       </div>

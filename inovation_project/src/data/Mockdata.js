@@ -1,21 +1,23 @@
-import { 
-  House, 
-  Grid, 
-  QuestionCircle, 
-  JournalBookmark, 
-  ClockHistory, 
+import {
+  House,
+  Grid,
+  QuestionCircle,
+  JournalBookmark,
+  ClockHistory,
   PersonGear,
-  Stars, 
+  Stars,
+  TrophyFill,
 } from 'react-bootstrap-icons';
 
 export const NAV_ITEMS = [
-  { id: "home",    label: "Início",            icon: House },
-  { id: "library", label: "Biblioteca",        icon: Grid },
-  { id: "lost",    label: "Achados e Perdidos", icon: QuestionCircle },
-  { id: "courses", label: "Cursos Técnicos",   icon: JournalBookmark },
-  { id: "history", label: "Nossa História",    icon: ClockHistory },
-  { id: "admin",   label: "Admin",             icon: PersonGear },
+  { id: "home", label: "Início", icon: House },
+  { id: "library", label: "Biblioteca", icon: Grid },
+  { id: "lost", label: "Achados e Perdidos", icon: QuestionCircle },
+  { id: "courses", label: "Cursos Técnicos", icon: JournalBookmark },
+  { id: "history", label: "Nossa História", icon: ClockHistory },
+  { id: "admin", label: "Admin", icon: PersonGear },
   { id: "talentos", label: "Banco de Talentos", icon: Stars },
+  { id: "esportes", label: "Esportes", icon: TrophyFill },
 ];
 
 export const AVISOS = [
@@ -50,19 +52,19 @@ export const AVISOS = [
 ];
 
 export const BOOKS = [
-  { id: 1, titulo: "Dom Casmurro",          autor: "Machado de Assis",      cat: "Literatura",  disp: true  },
-  { id: 2, titulo: "O Cortiço",             autor: "Aluísio Azevedo",       cat: "Literatura",  disp: true  },
-  { id: 3, titulo: "Sapiens",               autor: "Yuval Noah Harari",     cat: "História",    disp: false },
-  { id: 4, titulo: "Matemática Financeira", autor: "José Roberto Securato", cat: "Exatas",      disp: true  },
-  { id: 5, titulo: "Redes de Computadores", autor: "Andrew Tanenbaum",      cat: "Tecnologia",  disp: true  },
-  { id: 6, titulo: "A Arte da Guerra",      autor: "Sun Tzu",               cat: "Filosofia",   disp: false },
+  { id: 1, titulo: "Dom Casmurro", autor: "Machado de Assis", cat: "Literatura", disp: true },
+  { id: 2, titulo: "O Cortiço", autor: "Aluísio Azevedo", cat: "Literatura", disp: true },
+  { id: 3, titulo: "Sapiens", autor: "Yuval Noah Harari", cat: "História", disp: false },
+  { id: 4, titulo: "Matemática Financeira", autor: "José Roberto Securato", cat: "Exatas", disp: true },
+  { id: 5, titulo: "Redes de Computadores", autor: "Andrew Tanenbaum", cat: "Tecnologia", disp: true },
+  { id: 6, titulo: "A Arte da Guerra", autor: "Sun Tzu", cat: "Filosofia", disp: false },
 ];
 
 export const ACHADOS = [
   { id: 1, desc: "Mochila azul com zíper amarelo", sala: "Coord. 01", data: "28/03/2025", retirado: false },
-  { id: 2, desc: "Óculos de grau armação preta",   sala: "Coord. 02", data: "27/03/2025", retirado: true  },
-  { id: 3, desc: "Garrafa térmica cinza 500ml",     sala: "Coord. 01", data: "26/03/2025", retirado: false },
-  { id: 4, desc: "Estojo verde com lápis de cor",   sala: "Coord. 02", data: "25/03/2025", retirado: true  },
+  { id: 2, desc: "Óculos de grau armação preta", sala: "Coord. 02", data: "27/03/2025", retirado: true },
+  { id: 3, desc: "Garrafa térmica cinza 500ml", sala: "Coord. 01", data: "26/03/2025", retirado: false },
+  { id: 4, desc: "Estojo verde com lápis de cor", sala: "Coord. 02", data: "25/03/2025", retirado: true },
 ];
 
 export const CURSOS = [
@@ -73,8 +75,8 @@ export const CURSOS = [
     cor: "#2E86C1",
     desc: "Formação em desenvolvimento de sistemas, redes e banco de dados.",
     professores: [
-      { nome: "Prof. Carlos Souza",   materia: "Programação & Algoritmos", form: "Ciência da Computação – USP"   },
-      { nome: "Profa. Ana Lima",      materia: "Banco de Dados & Redes",   form: "Eng. de Computação – UNICAMP" },
+      { nome: "Prof. Carlos Souza", materia: "Programação & Algoritmos", form: "Ciência da Computação – USP" },
+      { nome: "Profa. Ana Lima", materia: "Banco de Dados & Redes", form: "Eng. de Computação – UNICAMP" },
     ],
   },
   {
@@ -84,8 +86,8 @@ export const CURSOS = [
     cor: "#F39C12",
     desc: "Formação em gestão empresarial, contabilidade e recursos humanos.",
     professores: [
-      { nome: "Prof. Roberto Neves",   materia: "Gestão Empresarial",       form: "Administração – FGV"         },
-      { nome: "Profa. Fernanda Costa", materia: "Contabilidade & Finanças", form: "Ciências Contábeis – PUC"    },
+      { nome: "Prof. Roberto Neves", materia: "Gestão Empresarial", form: "Administração – FGV" },
+      { nome: "Profa. Fernanda Costa", materia: "Contabilidade & Finanças", form: "Ciências Contábeis – PUC" },
     ],
   },
 ];
