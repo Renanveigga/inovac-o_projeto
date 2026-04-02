@@ -7,6 +7,9 @@ import {
   PersonGear,
   Stars,
   TrophyFill,
+  CircleFill,
+  ArrowRepeat,
+  DiamondFill
 } from 'react-bootstrap-icons';
 
 export const NAV_ITEMS = [
@@ -96,7 +99,7 @@ export const HISTORIAS = [
   {
     era: "Passado",
     cor: "#5D6D7E",
-    icon: "◴",
+    icon: CircleFill,
     titulo: "As Origens",
     texto:
       "Fundado com a missão de levar educação de qualidade à comunidade, o colégio cresceu a partir do esforço conjunto de professores dedicados e famílias comprometidas.",
@@ -104,7 +107,7 @@ export const HISTORIAS = [
   {
     era: "Presente",
     cor: "#2E86C1",
-    icon: "◉",
+    icon: ArrowRepeat,
     titulo: "Hoje",
     texto:
       "Com dois cursos técnicos reconhecidos, biblioteca completa e corpo docente altamente qualificado, o colégio é referência regional em educação técnica e cidadania.",
@@ -112,7 +115,7 @@ export const HISTORIAS = [
   {
     era: "Futuro",
     cor: "#F39C12",
-    icon: "◈",
+    icon: DiamondFill,
     titulo: "O que vem por aí",
     texto:
       "Você, aluno de hoje, é o protagonista de amanhã. A escola investe continuamente em tecnologia e projetos inovadores para preparar as próximas gerações.",

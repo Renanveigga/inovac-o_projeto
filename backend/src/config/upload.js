@@ -15,11 +15,12 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+  const tiposPermitidos = ["image/jpeg", "image/png"];
+
   if (tiposPermitidos.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Apenas imagens JPG, PNG ou WEBP são permitidas."), false);
+    cb(new Error("Arquivo inválido"), false);
   }
 };
 

@@ -1,17 +1,29 @@
-import { Router } from "express";
-import dotenv from "dotenv";
-dotenv.config();
+import express from "express";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-const router = Router();
+const router = express.Router();
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { senha } = req.body;
 
-  if (senha === process.env.ADMIN_SENHA) {
-    res.json({ autenticado: true, token: "admin-logado" });
-  } else {
-    res.status(401).json({ autenticado: false, erro: "Senha incorreta" });
+  const senhaValida = await bcrypt.compare(
+    senha,
+    process.env.ADMIN_PASSWORD
+  );
+
+  if (!senhaValida) {
+    return res.status(401).json({ erro: "Senha inválida" });
   }
+
+  const token = jwt.sign(
+    { admin: true },
+    process.env.JWT_SECRET,
+    { expiresIn: "2h" }
+  );
+
+  res.json({ token });
 });
+
 
 export default router;

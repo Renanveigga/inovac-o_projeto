@@ -7,21 +7,21 @@ export default function Login({ onLogin }) {
   const [erro, setErro] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    setErro(null);
-    try {
-      const res = await login(senha);
-      if (res.data.autenticado) {
-        sessionStorage.setItem("admin", "true");
-        onLogin();
-      }
-    } catch {
-      setErro("Senha incorreta. Tente novamente.");
-    } finally {
-      setLoading(false);
-    }
-  };
+ const handleSubmit = async () => {
+  setLoading(true);
+  setErro(null);
+
+  try {
+    await login(senha);
+
+    onLogin();
+
+  } catch {
+    setErro("Senha incorreta. Tente novamente.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={styles.loginWrapper}>

@@ -11,7 +11,7 @@ export default function History() {
 
       <div className={styles.timeline}>
         {HISTORIAS.map((item, i) => {
-          // 1. Criamos a referência do componente com letra MAIÚSCULA
+
           const Icon = item.icon;
 
           return (
@@ -25,7 +25,7 @@ export default function History() {
                   border: `2px solid ${item.cor}40`,
                 }}
               >
-                {/* 2. Renderizamos como tag JSX <Icon /> */}
+
                 {Icon && <Icon size={24} />}
               </div>
 

@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import path from "path";
 import authRouter from "./routes/auth.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 import avisosRouter  from "./routes/avisos.js";
 import livrosRouter  from "./routes/livros.js";
@@ -24,10 +26,11 @@ const __dirname  = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use("/auth", authRouter);
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static("uploads"));
 
 app.use("/avisos",  avisosRouter);
 app.use("/livros",  livrosRouter);
@@ -47,3 +50,10 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
+
+app.use(limiter);
